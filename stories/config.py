@@ -12,3 +12,5 @@ class Paths:
     raw_data = project / "raw_data"
     output = project / "output"
     scripts = project / "stories"
+    aid_to_africa = scripts / "aid_to_africa"
+    aid_to_africa_output = output / "aid_to_africa"

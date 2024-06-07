@@ -131,3 +131,6 @@ dmypy.json
 
 # Ignore DataSpell
 .idea/
+
+# raw ODA feather
+table2a*.feather
