@@ -21,11 +21,11 @@ def get_total_flows(start_year: int = 1960, end_year: int = 2023) -> pd.DataFram
 
 
 def filter_africa_total(df: pd.DataFrame) -> pd.DataFrame:
-    return df.query("recipient_code.isin([10100])")
+    return df.query("recipient_code.isin([10001])")
 
 
 def filter_dev_countries(df: pd.DataFrame) -> pd.DataFrame:
-    return df.query("recipient_code.isin([10001])")
+    return df.query("recipient_code.isin([10100])")
 
 
 def filter_g7_countries(df: pd.DataFrame) -> pd.DataFrame:
