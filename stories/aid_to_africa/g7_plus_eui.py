@@ -103,6 +103,7 @@ def yearly_africa_share_eui_multi():
         pd.concat([africa, all], ignore_index=True)
         .filter(["year", "recipient_name", "value"])
         .pivot(index=["year"], columns="recipient_name", values="value")
+        .reset_index()
     )
 
     df["share"] = df["Africa"] / df["Developing countries"]
@@ -187,6 +188,8 @@ def g7_eui_africa_share() -> pd.DataFrame:
     africa_imputed = download_g7_africa_multi()
     all_imputed = download_g7_all_multi()
 
+    eu_africa_imputed = download_eui_africa_multi()
+
     eui_portion_africa_imputed = g7_eui_imputed_multi_africa().assign(
         recipient_name="Africa", value=lambda d: d.value * -1
     )
@@ -201,7 +204,8 @@ def g7_eui_africa_share() -> pd.DataFrame:
     )
 
     imputed = pd.concat(
-        [africa_imputed, all_imputed, imputed_to_subtract], ignore_index=True
+        [africa_imputed, all_imputed, imputed_to_subtract, eu_africa_imputed],
+        ignore_index=True,
     ).filter(["year", "recipient_name", "value"])
 
     df = (
@@ -219,17 +223,29 @@ def g7_eui_africa_share() -> pd.DataFrame:
     return df
 
 
-if __name__ == "__main__":
-    # data = g7_eui_africa_share()
-    # data.to_csv(Paths.aid_to_africa_output / "g7_eui_africa_share.csv", index=False)
-
-    eu_afrb = yearly_africa_share_eui()
-    eu_afrm = yearly_africa_share_eui_multi()
+def eu_inst_africa_share() -> pd.DataFrame:
+    eu_afr_b = yearly_africa_share_eui()
+    eu_afr_m = yearly_africa_share_eui_multi()
 
     df = (
-        pd.concat([eu_afrb, eu_afrm], ignore_index=True)
+        pd.concat([eu_afr_b, eu_afr_m], ignore_index=True)
         .groupby("year", as_index=False, dropna=False)[
             ["Africa", "Developing countries"]
         ]
         .sum()
+    ).assign(
+        donor_name="EU Institutions",
+        share=lambda d: d.Africa / d["Developing countries"],
+        currency="USD",
+        prices="current",
     )
+
+    return df
+
+
+if __name__ == "__main__":
+    data = g7_eui_africa_share()
+    data.to_csv(Paths.aid_to_africa_output / "g7_eui_africa_share.csv", index=False)
+
+    eu_data = eu_inst_africa_share()
+    eu_data.to_csv(Paths.aid_to_africa_output / "eu_africa_share.csv", index=False)
