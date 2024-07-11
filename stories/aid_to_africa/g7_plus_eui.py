@@ -244,8 +244,36 @@ def eu_inst_africa_share() -> pd.DataFrame:
 
 
 if __name__ == "__main__":
-    data = g7_eui_africa_share()
-    data.to_csv(Paths.aid_to_africa_output / "g7_eui_africa_share.csv", index=False)
+    # data = g7_eui_africa_share()
+    # data.to_csv(Paths.aid_to_africa_output / "g7_eui_africa_share.csv", index=False)
 
+    from pydeflate import set_pydeflate_path, exchange
+
+    set_pydeflate_path(Paths.raw_data)
     eu_data = eu_inst_africa_share()
-    eu_data.to_csv(Paths.aid_to_africa_output / "eu_africa_share.csv", index=False)
+
+    eu_data2 = exchange(
+        eu_data.assign(id_col="EU Institutions"),
+        source_currency="USA",
+        target_currency="FRA",
+        rates_source="oecd_dac",
+        id_column="id_col",
+        value_column="Africa",
+        target_column="Africa",
+        date_column="year",
+        id_type="DAC",
+    )
+
+    eu_data2 = exchange(
+        eu_data2.assign(id_col="EU Institutions"),
+        source_currency="USA",
+        target_currency="FRA",
+        rates_source="oecd_dac",
+        id_column="id_col",
+        value_column="Developing countries",
+        target_column="Developing countries",
+        date_column="year",
+        id_type="DAC",
+    )
+
+    # eu_data.to_csv(Paths.aid_to_africa_output / "eu_africa_share.csv", index=False)
