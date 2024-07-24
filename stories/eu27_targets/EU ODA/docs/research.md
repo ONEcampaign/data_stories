@@ -1,6 +1,6 @@
 ---
 title: EU ODA targets
-toc: true
+toc: false
 sidebar: false
 ---
 
@@ -68,45 +68,11 @@ We assume that EU countries will meet their ODA targets by 2030, and that they w
 
 For countries who are already spending above their target, we assume that they will sustain their current level of ODA spending as a percentage of GNI.
 
-We evaluate four scenarios. In all cases, donors meet their targets by 2030 and continue spending their target ODA/GNI until 2034.
-1. The starting point for their trajectory towards their 2030 target is their preliminary 2023 ODA/GNI ratio.
-2. The starting point is 2023 spending, excluding only in-donor refugee costs.
-3. The starting point is 2023 spending, excluding only aid to Ukraine.
-4. The starting point is 2023 spending excluding in-donor refugee costs and aid to Ukraine.
-
-```js
-const scenarioData = FileAttachment("./data/scenario_totals.json").json()
-```
-
-In  total, for the 2028 to 2034 period, EU countries would need to spend the following amounts to meet their ODA targets. All amounts are in 2025 constant prices.
-
-<div class="grid grid-cols-4">
-
-<div class="card">
-<h2> Scenario 1</h2>
-<div class="big">€${(scenarioData['full']/1e3).toFixed(0)} billion</div>
-<div class="muted">Including IDRC and Ukraine spending</div>
-</div>
-
-<div class="card">
-<h2> Scenario 2</h2>
-<div class="big">€${(scenarioData['no_idrc']/1e3).toFixed(0)} billion</div>
-<div class="muted">Excluding IDRC spending</div>
-</div>
-
-<div class="card">
-<h2> Scenario 3</h2>
-<div class="big">€${(scenarioData['no_ukr']/1e3).toFixed(0)} billion</div>
-<div class="muted">Excluding Ukraine spending</div>
-</div>
-
-<div class="card">
-<h2> Scenario 4</h2>
-<div class="big">€${(scenarioData['no_ukr_no_idrc']/1e3).toFixed(0)} billion</div>
-<div class="muted">Excluding Ukraine and IDRC spending</div>
-</div>
-
-</div>
+We evaluate a few scenarios:
+- EU countries meet their targets by 2030, starting from their 2023 levels which included high spending on in-donor refugee costs and Ukraine.
+- EU countries meet their targets by 2030, not counting in-donor refugee costs.
+- EU countries meet their targets by 2030, not counting Ukraine spending.
+- EU countries meet their targets by 2030, excluding in-donor refugee costs and Ukraine spending.
 
 
 <div class="card grid-rowspan-2" style="max-width: 840px;">
