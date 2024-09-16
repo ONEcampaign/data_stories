@@ -532,22 +532,54 @@ def calculate_spending_period(
 def scenarios_eu_totals() -> None:
 
     key_numbers = {}
+
     full = eu_spending_projections(include_historical=True).assign(indicator="full")
+
     no_idrc = eu_spending_projections(
         include_historical=True, exclude_idrc=True
     ).assign(indicator="no_idrc")
+
     no_ukr = eu_spending_projections(
         include_historical=True, exclude_ukraine=True
     ).assign(indicator="no_ukr")
+
     no_ukr_no_idrc = eu_spending_projections(
         include_historical=True, exclude_ukraine=True, exclude_idrc=True
     ).assign(indicator="no_ukr_no_idrc")
 
     full_data = pd.concat([full, no_idrc, no_ukr, no_ukr_no_idrc], ignore_index=True)
-    latest = full_data.loc[full_data.year == 2023]
+    latest = full_data.loc[full_data.year == 2023].filter(
+        ["donor_code", "indicator", "oda"]
+    )
 
-    additional_spending_yearly = full_data.query("year > 2023").merge(
-        latest, on="donor_code", how="left"
+    additional_spending_yearly = (
+        full_data.query("year > 2023")
+        .merge(
+            latest,
+            on=["donor_code", "indicator"],
+            how="left",
+            suffixes=("", "_baseline"),
+        )
+        .assign(additional_oda=lambda d: d.oda - d.oda_baseline)
+        .assign(
+            indicator=lambda d: d.indicator.map(
+                {
+                    "full": "Full",
+                    "no_idrc": "Excluding IDRC",
+                    "no_ukr": "Excluding Ukraine",
+                    "no_ukr_no_idrc": "Excluding Ukraine and IDRC",
+                }
+            )
+        )
+        .drop(columns=["oda_baseline", "gni", "prices"])
+    )
+
+    additional_spending_yearly = add_short_names_column(
+        df=additional_spending_yearly, id_column="donor_code", id_type="DACCode"
+    ).drop(columns=["donor_code"])
+
+    additional_spending_yearly.to_csv(
+        Paths.eu_project_data / "additional_spending_yearly.csv", index=False
     )
 
     full_current = calculate_spending_period(full, "full_latest", start=2023, end=2023)
@@ -586,5 +618,5 @@ if __name__ == "__main__":
     scenarios_eu_totals()
     # spending = spending_targets_by_country()
     # spending_projections = projected_gni_to_spending(gni_projections)
-
+    # #
     # data = spending_targets_by_country()

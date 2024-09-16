@@ -24,6 +24,8 @@ This page summarises the methodology we use for estimating the ODA required for 
 For this work, we use ODA and GNI data from the OECD Development Assistance Committee. We also use economic projections from the IMF World Economic Outlook
 </div>
 
+---
+
 ## Where are we today?
 The latest year with available ODA data is 2023. These numbers are preliminary and subject to change. This data includes GNI estimates for all donors.
 
@@ -50,6 +52,7 @@ ${targetTable}
 
 </div>
 
+
 ### A more complex picture
 
 A significant portion of EU ODA is spent on in-donor refugee costs. They can only be counted for the first year after refugees arrive in donor countries. That means they don't represent a stable increase in ODA spending.
@@ -59,6 +62,8 @@ In 2023, this accounted for **€14.8 billion**, or **13%** of total EU ODA. Thi
 Similarly, while EU support to Ukraine has increased significantly since Russia's invasion started. In 2022, it accounted for some **21%** of total EU ODA, or **€20 billion**. Full data for 2023 is not yet available.
 
 In comparison, in 2021, total EU ODA to Ukraine was €2 billion, or just over 2% of total EU ODA.
+
+---
 
 ## Projecting the required spending
 
@@ -109,24 +114,47 @@ In  total, for the 2028 to 2034 period, EU countries would need to spend the fol
 </div>
 
 
-<div class="card grid-rowspan-2" style="max-width: 840px;">
-<h2>ODA/GNI trajectories for EU countries</h2><br>
-<iframe src='https://flo.uri.sh/visualisation/18656439/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:80rem;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
-</div>
+---
+
+## What does this mean for individual countries?
+
+Not taking into account additional spending by the EU Institutions our of own resources, the following table shows how much EU 27 countries would have to spend per year to meet their **individual** targets by 2030, and sustain that spending (as a share of GNI) until 2034. 
+
+```js
+const additionalSpendingData = FileAttachment("./data/additional_spending_yearly.csv").csv({typed:true})
+```
 
 
+```js
+const selectScenario = view(Inputs.radio(additionalSpendingData.map(d => d.indicator), {unique:true, value: "Full", label: "Select scenario"}))
+```
 
-**What does this mean for individual countries?**
+<div class="card" style="max-width: 700px">
 
-Not taking into account additional spending by the EU Institutions our of own resources, the following chart shows how much EU 27 countries would have to spend per year to meet their **individual** targets by 2030. 
+```js
+const additionalSpendingTable = view(Inputs.table(additionalSpendingData.filter(d => d.indicator == selectScenario),{
+    rows: 15.5,
+    columns: ["year","name_short", "oda_gni_ratio", "oda", "additional_oda"],
+    header: {"year": "Year", "oda_gni_ratio": "ODA/GNI (%)", "oda": "Projected ODA", "additional_oda": "Additional ODA",
+        "name_short": "Country",
+    },
+    width: {
+        "year": 100,
+        "name_short": 130
+     },
+     layout: "auto",
 
-Meeting all of the targets, without additional spending from the EU institutions, would only get EU countries to about 0.66-0.69% of GNI by 2030 (depending on the starting point (whether including current IDRC and Ukraine spending or not)).
+     format:{
+        year: d=>d.toFixed(0),
+        oda_gni_ratio: d => (100*d).toFixed(2),
+        oda: d=> d.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 1}),
+        additional_oda: d=> d.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 1}),
+     },
+     align:{
+        year: "left"
+     }
 
-By 2030, EU countries would need to spend between **€126 billion** and **€131 billion** (in 2025 constant prices) to meet their individual targets. That translates to about €165 billion to €171 billion in current prices.
+}))
+```
 
-The following chart also shows the amounts that individual countries would need to spend to meet their ODA targets by 2030. 
-
-<div class="card grid-rowspan-2" style="max-width: 720px;">
-<h2>Spending trajectories for EU countries</h2><br>
-<iframe src='https://flo.uri.sh/story/2467931/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:600px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
 </div>
