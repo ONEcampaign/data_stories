@@ -18,7 +18,7 @@ const targetTable = Inputs.table(targetTableData,
 
 # EU ODA Targets
 
-This page summarises the methodology we use for estimating the ODA required for EU countries to meet their ODA targets.
+This is a working document which presents an overview of our methodological considerations and options for  estimating the ODA required for EU countries to meet their ODA targets.
 
 <div class="note">
 For this work, we use ODA and GNI data from the OECD Development Assistance Committee. We also use economic projections from the IMF World Economic Outlook
@@ -30,7 +30,6 @@ For this work, we use ODA and GNI data from the OECD Development Assistance Comm
 The latest year with available ODA data is 2023. These numbers are preliminary and subject to change. This data includes GNI estimates for all donors.
 
 Since 2022, there has been a significant increase in in-donor refugee costs and aid to Ukraine. Since 2020, donors have also spent a significant amount of ODA on COVID-19 response. Since 2023 numbers are preliminary, we do not have a full picture of how much ODA was spent on these items in 2023.
-
 
 In 2023, the EU collectively spent **0.57%** of its GNI, or **€96.5 billion**, on ODA. That is **€32 billion** short of its collective target of 0.7% of GNI.
 
@@ -62,6 +61,15 @@ In 2023, this accounted for **€14.8 billion**, or **13%** of total EU ODA. Thi
 Similarly, while EU support to Ukraine has increased significantly since Russia's invasion started. In 2022, it accounted for some **21%** of total EU ODA, or **€20 billion**. Full data for 2023 is not yet available.
 
 In comparison, in 2021, total EU ODA to Ukraine was €2 billion, or just over 2% of total EU ODA.
+
+### What about the EU Institutions?
+EU Member states provide core funding to the EU Institutions through a number of instruments. The EU Institutions also have their own resources, which they can use to provide ODA.
+
+The share of ODA provided by the EU Institutions has been x% on average over the current MFF period (2020 - to date). Over the previous MFF period (2014-2020), it was y%.
+
+The EU Institutions spend an average of €x billion per year, out of their own resources. This is z% of their total yearly spending and represents a% of total EU ODA.
+
+
 
 ---
 
