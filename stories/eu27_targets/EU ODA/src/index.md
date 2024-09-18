@@ -65,9 +65,9 @@ In comparison, in 2021, total EU ODA to Ukraine was €2 billion, or just over 2
 ### What about the EU Institutions?
 EU Member states provide core funding to the EU Institutions through a number of instruments. The EU Institutions also have their own resources, which they can use to provide ODA.
 
-The share of EU ODA provided by the EU Institutions has been 23.1% on average over the current MFF period (2020 - 2022). Over the previous MFF period (2014-2020), it was 24.6%.
+The share of EU ODA provided by the EU Institutions has been **23.1% on average** over the current MFF period (2020 - 2022). Over the previous MFF period (2014-2020), it was 24.6%.
 
-The EU Institutions spend an average of €3.9 billion per year (2020-2022), out of their own resources. This is 20.6% of their total yearly spending (during the current MFF).
+The EU Institutions spend an average of **€3.9 billion** per year (2020-2022), out of their own resources. This is **20.6%** of their total yearly spending (during the current MFF).
 
 <div class="card" style="max-width: 640px;">
 
