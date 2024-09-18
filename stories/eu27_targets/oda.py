@@ -2,35 +2,21 @@ import json
 
 import pandas as pd
 from oda_data import donor_groupings, set_data_path, ODAData
-from oda_reader import download_dac1
-from pydeflate import set_pydeflate_path, exchange
+from pydeflate import set_pydeflate_path
 
 from stories import config
 from stories.aid_to_africa.g7_plus_eui import download_all_official_eui
+from stories.eu27_targets.common import (
+    CURRENCY,
+    EU27,
+    LOWER_TARGET,
+    TARGET,
+    LOWER_TARGET_COUNTRIES,
+)
+from stories.eu27_targets.eui_share import download_eu_x_eui
 
 set_data_path(config.Paths.raw_data)
 set_pydeflate_path(config.Paths.raw_data)
-
-CURRENCY = "EUR"
-
-EU27 = list(donor_groupings()["eu27_countries"].keys())
-LOWER_TARGET = 0.0033
-TARGET = 0.007
-LOWER_TARGET_COUNTRIES = {
-    30,
-    69,
-    75,
-    77,
-    72,
-    62,
-    61,
-    68,
-    45,
-    82,
-    84,
-    83,
-    76,
-}
 
 
 def export_targets() -> None:
@@ -180,15 +166,6 @@ def eu_countries_summary(df: pd.DataFrame) -> pd.DataFrame:
     return data
 
 
-def download_eu27_eui():
-    filters = {"flow_type": "1120", "measure": "2102", "price_base": "V"}
-    df = download_dac1(start_year=2022, filters=filters)
-
-    df = df.loc[lambda d: d.donor_code.isin(EU27)]
-
-    return df
-
-
 def yearly_g7_share_of_eui():
 
     # Get all core contributions to EUI
@@ -200,7 +177,7 @@ def yearly_g7_share_of_eui():
     )
 
     # Get G7 contributions to EUI
-    eu27_eui = download_eu27_eui().filter(["year", "value"])
+    eu27_eui = download_eu_x_eui().filter(["year", "value"])
 
     # Merge the two dataframes
     df = all_eui.merge(eu27_eui, on="year", suffixes=("_all", "_g7"), how="outer")
