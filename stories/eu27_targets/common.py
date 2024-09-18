@@ -20,5 +20,3 @@ LOWER_TARGET_COUNTRIES = {
     83,
     76,
 }
-
-
