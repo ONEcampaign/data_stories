@@ -52,7 +52,7 @@ ${targetTable}
 </div>
 
 
-### A more complex picture
+### The role of in-donor spending and support to Ukraine
 
 A significant portion of EU ODA is spent on in-donor refugee costs. They can only be counted for the first year after refugees arrive in donor countries. That means they don't represent a stable increase in ODA spending.
 
@@ -65,11 +65,16 @@ In comparison, in 2021, total EU ODA to Ukraine was €2 billion, or just over 2
 ### What about the EU Institutions?
 EU Member states provide core funding to the EU Institutions through a number of instruments. The EU Institutions also have their own resources, which they can use to provide ODA.
 
-The share of ODA provided by the EU Institutions has been x% on average over the current MFF period (2020 - to date). Over the previous MFF period (2014-2020), it was y%.
+The share of EU ODA provided by the EU Institutions has been 23.1% on average over the current MFF period (2020 - 2022). Over the previous MFF period (2014-2020), it was 24.6%.
 
-The EU Institutions spend an average of €x billion per year, out of their own resources. This is z% of their total yearly spending and represents a% of total EU ODA.
+The EU Institutions spend an average of €3.9 billion per year (2020-2022), out of their own resources. This is 20.6% of their total yearly spending (during the current MFF).
 
+<div class="card" style="max-width: 640px;">
 
+## EU Institutions ODA spending
+
+<iframe src='https://flo.uri.sh/visualisation/19459650/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:550px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+</div>
 
 ---
 
@@ -126,7 +131,7 @@ In  total, for the 2028 to 2034 period, EU countries would need to spend the fol
 
 ## What does this mean for individual countries?
 
-Not taking into account additional spending by the EU Institutions our of own resources, the following table shows how much EU 27 countries would have to spend per year to meet their **individual** targets by 2030, and sustain that spending (as a share of GNI) until 2034. 
+Not taking into account additional spending by the EU Institutions own resources, the following table shows how much EU 27 countries would have to spend per year to meet their **individual** targets by 2030, and sustain that spending (as a share of GNI) until 2034. 
 
 ```js
 const additionalSpendingData = FileAttachment("./data/additional_spending_yearly.csv").csv({typed:true})
