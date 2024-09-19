@@ -30,12 +30,14 @@ def to_constant_eur(data: pd.DataFrame, year: int, column: str) -> pd.DataFrame:
     )
 
 
-def get_total_oda(start_year: int = 2022, end_year: int = 2023) -> pd.DataFrame:
+def get_total_oda(
+    start_year: int = 2022, end_year: int = 2023, currency: str = CURRENCY
+) -> pd.DataFrame:
 
     oda = ODAData(
         years=range(start_year, end_year + 1),
         donors=EU27 + [20918, 918],
-        currency=CURRENCY,
+        currency=currency,
     )
 
     oda.load_indicator(["total_oda_official_definition"])

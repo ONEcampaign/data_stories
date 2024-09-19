@@ -177,7 +177,7 @@ def yearly_g7_share_of_eui():
     )
 
     # Get G7 contributions to EUI
-    eu27_eui = download_eu_x_eui().filter(["year", "value"])
+    eu27_eui = download_eu_x_eui(currency=CURRENCY).filter(["year", "value"])
 
     # Merge the two dataframes
     df = all_eui.merge(eu27_eui, on="year", suffixes=("_all", "_g7"), how="outer")

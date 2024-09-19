@@ -48,7 +48,9 @@ def get_gni_projections(
         deflators, left_on="donor_code", right_on="dac_code", how="right"
     )
 
-    gni_projection["gni"] = gni_projection["value"] * gni_projection["gni"]
+    gni_projection["gni"] = gni_projection["value"].astype(float) * gni_projection[
+        "gni"
+    ].astype(float)
 
     return gni_projection.filter(["year", "donor_code", "gni"])
 
@@ -529,6 +531,22 @@ def calculate_spending_period(
     )
 
 
+def calculate_eu_spending_period(
+    df: pd.DataFrame, method: str, start: int = 2028, end: int = 2034
+) -> dict:
+    share = 0.231
+    return (
+        df.assign(method=method)
+        .loc[lambda d: d.year.between(start, end)]
+        .assign(oda=lambda d: d.oda * share)
+        .groupby(["method"])[["oda"]]
+        .sum()
+        .round(0)["oda"]
+        .astype("Int64")
+        .to_dict()
+    )
+
+
 def scenarios_eu_totals() -> None:
 
     key_numbers = {}
@@ -594,20 +612,37 @@ def scenarios_eu_totals() -> None:
     )
 
     full_total = calculate_spending_period(full, "full")
-    no_idrc_total = calculate_spending_period(no_idrc, "no_idrc")
-    no_ukr_total = calculate_spending_period(no_ukr, "no_ukr")
-    no_ukr_no_idrc_total = calculate_spending_period(no_ukr_no_idrc, "no_ukr_no_idrc")
+    full_share = calculate_eu_spending_period(full, "full")
 
-    key_numbers |= (
-        full_total
-        | no_idrc_total
-        | no_ukr_total
-        | no_ukr_no_idrc_total
-        | full_current
-        | no_idrc_current
-        | no_ukr_current
-        | no_ukr_no_idrc_current
+    no_idrc_total = calculate_spending_period(no_idrc, "no_idrc")
+    no_idrc_share = calculate_eu_spending_period(no_idrc, "no_idrc")
+
+    no_ukr_total = calculate_spending_period(no_ukr, "no_ukr")
+    no_ukr_share = calculate_eu_spending_period(no_ukr, "no_ukr")
+
+    no_ukr_no_idrc_total = calculate_spending_period(no_ukr_no_idrc, "no_ukr_no_idrc")
+    no_ukr_no_idrc_share = calculate_eu_spending_period(
+        no_ukr_no_idrc, "no_ukr_no_idrc"
     )
+
+    eu_shares = {
+        "eui_share": full_share | no_idrc_share | no_ukr_share | no_ukr_no_idrc_share
+    }
+
+    key_numbers |= {
+        "totals": (
+            full_total
+            | no_idrc_total
+            | no_ukr_total
+            | no_ukr_no_idrc_total
+            | full_current
+            | no_idrc_current
+            | no_ukr_current
+            | no_ukr_no_idrc_current
+        )
+    }
+
+    key_numbers |= eu_shares
 
     # Save as json
     with open(Paths.eu_project_data / "scenario_totals.json", "w") as f:

@@ -15,4 +15,4 @@ class Paths:
     aid_to_africa = scripts / "aid_to_africa"
     aid_to_africa_output = output / "aid_to_africa"
     eu27_oda_project = scripts / "eu27_targets"
-    eu_project_data = eu27_oda_project / "EU ODA" / "docs" / "data"
+    eu_project_data = eu27_oda_project / "EU ODA" / "src" / "data"

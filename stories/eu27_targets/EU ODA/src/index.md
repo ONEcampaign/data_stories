@@ -96,32 +96,38 @@ We evaluate four scenarios. In all cases, donors meet their targets by 2030 and 
 const scenarioData = FileAttachment("./data/scenario_totals.json").json()
 ```
 
+```js
+const totalScenarios = scenarioData['totals']
+const euScenarios = scenarioData['eui_share']
+```
+
 In  total, for the 2028 to 2034 period, EU countries would need to spend the following amounts to meet their ODA targets. All amounts are in 2025 constant prices.
 
-<div class="grid grid-cols-4">
+```js
+const scenarios =[
+   {name: "full", label: "Full"},
+   {name: "no_idrc", label: "Excluding IDRC"},
+   {name: "no_ukr", label: "Excluding Ukraine"},
+   {name: "no_ukr_no_idrc", label: "Excluding Ukraine and IDRC"}
+]
+```
+
+```js
+const selectScenario = view(Inputs.radio(scenarios, {value: scenarios.find(t=>t.name === "full"), format: t=>t.label}))
+```
+
+<div class="grid grid-cols-2">
 
 <div class="card">
-<h2> Scenario 1</h2>
-<div class="big">€${(scenarioData['full']/1e3).toFixed(0)} billion</div>
-<div class="muted">Including IDRC and Ukraine spending</div>
+<h2>Total European Union</h2>
+<div class="big">€${(totalScenarios[selectScenario.name]/1e3).toFixed(0)} billion</div>
+<div class="muted">Scenario: ${selectScenario.label}</div>
 </div>
 
 <div class="card">
-<h2> Scenario 2</h2>
-<div class="big">€${(scenarioData['no_idrc']/1e3).toFixed(0)} billion</div>
-<div class="muted">Excluding IDRC spending</div>
-</div>
-
-<div class="card">
-<h2> Scenario 3</h2>
-<div class="big">€${(scenarioData['no_ukr']/1e3).toFixed(0)} billion</div>
-<div class="muted">Excluding Ukraine spending</div>
-</div>
-
-<div class="card">
-<h2> Scenario 4</h2>
-<div class="big">€${(scenarioData['no_ukr_no_idrc']/1e3).toFixed(0)} billion</div>
-<div class="muted">Excluding Ukraine and IDRC spending</div>
+<h2>EU Institutions</h2>
+<div class="big">€${(euScenarios[selectScenario.name]/1e3).toFixed(0)} billion</div>
+<div class="muted">Scenario: ${selectScenario.label}</div>
 </div>
 
 </div>
@@ -133,19 +139,16 @@ In  total, for the 2028 to 2034 period, EU countries would need to spend the fol
 
 Not taking into account additional spending by the EU Institutions own resources, the following table shows how much EU 27 countries would have to spend per year to meet their **individual** targets by 2030, and sustain that spending (as a share of GNI) until 2034. 
 
+**Scenario:** ${selectScenario.label}
+
 ```js
 const additionalSpendingData = FileAttachment("./data/additional_spending_yearly.csv").csv({typed:true})
-```
-
-
-```js
-const selectScenario = view(Inputs.radio(additionalSpendingData.map(d => d.indicator), {unique:true, value: "Full", label: "Select scenario"}))
 ```
 
 <div class="card" style="max-width: 700px">
 
 ```js
-const additionalSpendingTable = view(Inputs.table(additionalSpendingData.filter(d => d.indicator == selectScenario),{
+const additionalSpendingTable = view(Inputs.table(additionalSpendingData.filter(d => d.indicator == selectScenario.label),{
     rows: 15.5,
     columns: ["year","name_short", "oda_gni_ratio", "oda", "additional_oda"],
     header: {"year": "Year", "oda_gni_ratio": "ODA/GNI (%)", "oda": "Projected ODA", "additional_oda": "Additional ODA",
