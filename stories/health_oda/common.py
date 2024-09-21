@@ -54,4 +54,4 @@ def filter_low_income_countries(df: pd.DataFrame) -> pd.DataFrame:
     """Filter the dataframe to include only low-income countries."""
     df = add_income_grouping(df)
 
-    return df.loc[lambda d: d.income_group == "Low income"].reset_index(drop=True)
+    return df.loc[lambda d: d.income_level == "Low income"].reset_index(drop=True)
