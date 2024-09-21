@@ -55,3 +55,10 @@ def filter_low_income_countries(df: pd.DataFrame) -> pd.DataFrame:
     df = add_income_grouping(df)
 
     return df.loc[lambda d: d.income_level == "Low income"].reset_index(drop=True)
+
+
+def filter_african_countries(df: pd.DataFrame) -> pd.DataFrame:
+    """Filter the dataframe to include only African countries."""
+    return df.loc[
+        lambda d: d[OdaSchema.RECIPIENT_CODE].isin(list(RECIPIENT_GROUPS["Africa"]))
+    ].reset_index(drop=True)
