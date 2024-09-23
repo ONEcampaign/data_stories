@@ -77,6 +77,6 @@ if __name__ == "__main__":
     lic_africa.pivot(
         index=["year", "prices"], columns="recipient_group", values="value"
     ).to_csv(config.Paths.health_oda / "total_health_oda_trend.csv")
-    
+
     health_share = health_share_trend(1990, 2022)
-    health_share.to_csv(config.Paths.health_oda / "health_share_trend.csv")
+    health_share.to_csv(config.Paths.health_oda / "health_share_trend.csv", index=False)
