@@ -80,7 +80,7 @@ def get_total_bilateral_oda(
     return df
 
 
-def get_multilateral_health_oda(
+def get_imputed_multilateral_health_oda(
     start_year: int = 2000,
     end_year: int = 2023,
     prices: str = "current",
@@ -96,4 +96,4 @@ def get_multilateral_health_oda(
 
 
 if __name__ == "__main__":
-    df = get_multilateral_health_oda(2018, 2023)
+    df = get_imputed_multilateral_health_oda(2018, 2023)
