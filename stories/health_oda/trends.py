@@ -117,6 +117,58 @@ def pre_post_covid_trend(
     return data
 
 
+def remove_covid_keyword(df: pd.DataFrame) -> pd.DataFrame:
+    # exclude any rows where the substring 'covid' appears in the keyword column
+    return df.loc[lambda d: ~d.keywords.str.contains("covid", case=False, na=False)]
+
+
+def remove_covid_purpose(df: pd.DataFrame) -> pd.DataFrame:
+
+    return df.loc[lambda d: d.purpose_code != 12264]
+
+
+def remove_covid_trust_fund(df: pd.DataFrame) -> pd.DataFrame:
+    return df.loc[lambda d: d.donor_code != 1047]
+
+
+def health_with_and_without_covid(
+    prices: str = "constant", base_year: int = 2022, start_year: int = 2015
+) -> pd.DataFrame:
+
+    grouper = ["year"]
+
+    # Get the data for health
+    health = get_bilateral_health_oda(
+        start_year=start_year, end_year=2022, prices=prices, base_year=base_year
+    )
+
+    health_without_covid = (
+        health.pipe(remove_covid_keyword)
+        .pipe(remove_covid_purpose)
+        .pipe(remove_covid_trust_fund)
+    )
+
+    health = (
+        health.groupby(grouper, observed=True, dropna=False)["value"]
+        .sum()
+        .reset_index()
+        .assign(indicator="Health ODA")
+    )
+
+    health_without_covid = (
+        health_without_covid.groupby(grouper, observed=True, dropna=False)["value"]
+        .sum()
+        .reset_index()
+        .assign(indicator="Health ODA (without COVID)")
+        .loc[lambda d: d.year >= 2019]
+    )
+
+    data = pd.concat([health, health_without_covid], ignore_index=True)
+    data = data.pivot(index="year", columns="indicator", values="value").reset_index()
+
+    return data
+
+
 if __name__ == "__main__":
     lic_africa = low_income_and_africa_trend(1990, 2022)
     lic_africa.pivot(
@@ -134,3 +186,8 @@ if __name__ == "__main__":
 
     covid = pre_post_covid_trend()
     covid.to_csv(config.Paths.health_oda / "pre_post_covid_trend.csv", index=False)
+
+    with_without_covid = health_with_and_without_covid()
+    with_without_covid.to_csv(
+        config.Paths.health_oda / "health_with_without_covid.csv", index=False
+    )
