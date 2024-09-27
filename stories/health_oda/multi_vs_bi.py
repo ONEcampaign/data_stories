@@ -105,9 +105,32 @@ def top_x_providers(
         health.sort_values(["year", "value"], ascending=[True, False])
         .groupby("year")
         .head(top_x)
+        .filter(["year", "donor_name", "value", "share"])
     )
 
-    return health_top.filter(["year", "donor_name", "value", "share"])
+    values = (
+        health_top.pivot(
+            index=["year"],
+            columns="donor_name",
+            values="value",
+        )
+        .reset_index()
+        .assign(indicator="value")
+    )
+
+    shares = (
+        health_top.pivot(
+            index=["year"],
+            columns="donor_name",
+            values="share",
+        )
+        .reset_index()
+        .assign(indicator="share")
+    )
+
+    data = pd.concat([values, shares], ignore_index=True)
+
+    return data
 
 
 if __name__ == "__main__":
@@ -115,13 +138,13 @@ if __name__ == "__main__":
     split.to_csv(config.Paths.health_oda / "bilat_vs_multilat.csv", index=False)
 
     top5_multi = top_x_providers(
-        2000,
+        2008,
         2022,
         donor_type="Multilateral donors",
         top_x=5,
         rolling_years=3,
         prices="constant",
         base_year=2022,
-    )
+    ).loc[lambda d: d.year >= 2010]
 
     top5_multi.to_csv(config.Paths.health_oda / "top5_multi.csv", index=False)
