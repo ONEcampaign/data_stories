@@ -10,7 +10,15 @@ from stories.health_oda.common import filter_health_sectors
 set_data_path(config.Paths.raw_data)
 
 
-GROUPER = ["year", "indicator", "donor_code", "recipient_code", "keywords", "prices"]
+GROUPER = [
+    "year",
+    "indicator",
+    "donor_code",
+    "recipient_code",
+    "purpose_code",
+    "keywords",
+    "prices",
+]
 
 
 def _get_health_oda_indicator(
