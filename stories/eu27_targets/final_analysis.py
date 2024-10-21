@@ -166,5 +166,5 @@ if __name__ == "__main__":
 
     df.to_clipboard(index=False)
 
-    # eu = eui_spending_chart(df)
-    # eu.to_clipboard(index=False)
+    eu = eui_spending_chart(df)
+    eu.to_clipboard(index=False)

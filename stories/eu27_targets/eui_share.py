@@ -117,9 +117,11 @@ def eui_period_share(period: str = "previous") -> float:
 
 
 def eu_own_resources_constant_eur() -> pd.DataFrame:
-    spending_eui = get_total_oda(start_year=2014, end_year=2023).loc[
-        lambda d: d.donor_code.isin([20918, 918])
-    ]
+    spending_eui = (
+        get_total_oda(start_year=2014, end_year=2023)
+        .loc[lambda d: d.donor_code.isin([20918, 918])]
+        .assign(dac_code=lambda d: d.donor_code)
+    )
 
     spending_eui = to_constant(df=spending_eui, base_year=2025, source_currency="USD")
 

@@ -70,7 +70,7 @@ def get_constant_deflators(base: int = 2022):
         eu.groupby(["year"], dropna=False, observed=True)[["NGDPD", "NGDPD_C"]]
         .sum()
         .reset_index()
-        .assign(iso_code="EUI", indicator="NGDP_D")
+        .assign(iso_code="EUI", dac_code=918, donor_code=918, indicator="NGDP_D")
         .assign(value=lambda d: 100 * d.NGDPD / d.NGDPD_C)
         .filter(["iso_code", "dac_code", "year", "indicator", "value"])
     )
