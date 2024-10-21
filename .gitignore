@@ -134,3 +134,5 @@ dmypy.json
 
 # raw ODA feather
 table2a*.feather
+*.feather
+*.parquet
