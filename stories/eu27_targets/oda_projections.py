@@ -49,9 +49,10 @@ def get_gni_projections(
         deflators, left_on="donor_code", right_on="dac_code", how="right"
     )
 
-    gni_projection["gni"] = gni_projection["value"].astype(float) / gni_projection[
-        "gni"
-    ].astype(float)
+    gni_projection["gni"] = gni_projection["gni"].astype(float)
+    gni_projection["value"] = gni_projection["value"].astype(float)
+
+    gni_projection["gni"] = gni_projection["gni"] / gni_projection["value"]
 
     return gni_projection.filter(["year", "donor_code", "gni"])
 
@@ -100,9 +101,9 @@ def _get_gni_targets_from_target_year(
     below_target = latest.loc[lambda d: d.oda_gni_ratio < d.target]
 
     dfs = []
-    for year in range(target_year, projections_end_year + 1):
-        dfs.append(at_target.assign(year=year))
-        dfs.append(below_target.assign(year=year, oda_gni_ratio=lambda d: d.target))
+
+    dfs.append(at_target.assign(year=target_year))
+    dfs.append(below_target.assign(year=target_year, oda_gni_ratio=lambda d: d.target))
 
     df = pd.concat([oda_df, *dfs], ignore_index=True).filter(
         ["year", "donor_code", "oda_gni_ratio"]
@@ -282,7 +283,6 @@ def eu_spending_projections(
 
     targets = individual_gni_targets(
         start_year=start_year,
-        target_year=end_year,
         projections_end_year=2034,
         use_2022_ukraine=True,
         include_idrc=not exclude_idrc,

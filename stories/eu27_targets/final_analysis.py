@@ -104,7 +104,7 @@ def clean_data_for_viz(df: pd.DataFrame) -> pd.DataFrame:
     """
     df["ODA/GNI ratio"] = df["ODA/GNI ratio"].round(2)
     df["ODA"] = df["ODA"].round(0)
-    df["Missing to target"] = (df["Target"] - df["ODA"]).round(0)
+    df["Missing to target"] = (df["Target"] - df["ODA"]).clip(0).round(0)
 
     return df.drop(columns=["Target"])
 
@@ -163,6 +163,8 @@ def eui_spending_chart(members: pd.DataFrame) -> pd.DataFrame:
 if __name__ == "__main__":
     df = main_column_chart_with_projections()
     df.to_csv(Paths.eu_project_data / "eu27_column_chart_2014_2034.csv", index=False)
+
+    df.to_clipboard(index=False)
 
     eu = eui_spending_chart(df)
     eu.to_clipboard(index=False)
