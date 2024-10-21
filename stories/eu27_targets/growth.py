@@ -53,11 +53,15 @@ def get_constant_deflators(base: int = 2022):
 
     weo.load_data(["NGDP_D", "NGDPD"])
 
-    df = weo.get_data("NGDPD")
-    eu = weo.get_data()
+    df = (
+        weo.get_data("NGDPD")
+        .pipe(add_dac_codes)
+        .loc[lambda d: d.dac_code.isin(eu27 + [918])]
+    )
+    eu = weo.get_data().pipe(add_dac_codes).loc[lambda d: d.dac_code.isin(eu27 + [918])]
 
     eu = eu.pivot(
-        index=["iso_code", "year"], columns="indicator", values="value"
+        index=["iso_code", "dac_code", "year"], columns="indicator", values="value"
     ).reset_index()
 
     eu["NGDPD_C"] = eu["NGDPD"] / (eu["NGDP_D"] / 100)
@@ -68,23 +72,45 @@ def get_constant_deflators(base: int = 2022):
         .reset_index()
         .assign(iso_code="EUI", indicator="NGDP_D")
         .assign(value=lambda d: 100 * d.NGDPD / d.NGDPD_C)
-        .filter(["iso_code", "year", "indicator", "value"])
+        .filter(["iso_code", "dac_code", "year", "indicator", "value"])
     )
 
     df = pd.concat([df, eu], ignore_index=True)
 
-    df = (
-        df.pipe(add_dac_codes)
-        .loc[lambda d: d.dac_code.isin(eu27 + [918])]
-        .pipe(rebase_value, year=base)
-    )
+    df = df.pipe(rebase_value, year=base)
 
     return df.filter(["dac_code", "iso_code", "year", "value"])
 
 
+def get_gdp_growth_factor(from_year: int):
+
+    weo = WorldEconomicOutlook(year=2024, release=1)
+
+    weo.load_data(["NGDP_R"])
+
+    df = (
+        weo.get_data()
+        .sort_values(["iso_code", "year"])
+        .assign(year=lambda d: d.year.dt.year)
+        .pipe(add_dac_codes)
+        .loc[lambda d: d.dac_code.isin(eu27 + [918])]
+    )
+
+    base_values = df.loc[lambda d: d.year == from_year].filter(
+        ["iso_code", "dac_code", "value"]
+    )
+
+    df = df.merge(
+        base_values, on=["iso_code", "dac_code"], suffixes=("", "_base"), how="left"
+    )
+    df["value"] = 1 + (df["value"] - df["value_base"]) / df["value_base"]
+
+    return df.filter(["dac_code", "dac_code", "iso_code", "year", "value"])
+
+
 def get_current_deflators(base: int = 2023):
 
-    weo = WorldEconomicOutlook(year=2020, version=1)
+    weo = WorldEconomicOutlook(year=2020, release=1)
 
     weo.load_data("NGDP")
 
@@ -140,7 +166,10 @@ def extend_deflators_to_year(
         group = pd.concat([group, new_df], ignore_index=False)
         return group
 
-    data = data.assign(year=lambda d: d.year.dt.year)
+    try:
+        data = data.assign(year=lambda d: d.year.dt.year)
+    except AttributeError:
+        pass
 
     dfs = []
 
