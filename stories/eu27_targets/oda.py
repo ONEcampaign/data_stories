@@ -31,9 +31,11 @@ def export_targets() -> None:
         json.dump(goals, f)
 
 
-def get_total_oda_and_gni(years: int | list[int] = 2023) -> pd.DataFrame:
+def get_total_oda_and_gni(
+    years: int | list[int] = 2023, currency: str = "EUR"
+) -> pd.DataFrame:
 
-    oda = ODAData(years=years, donors=EU27 + [20918, 918], currency=CURRENCY)
+    oda = ODAData(years=years, donors=EU27 + [20918, 918], currency=currency)
 
     oda.load_indicator(["total_oda_official_definition", "gni"])
 
@@ -216,10 +218,11 @@ def get_total_oda_data(
     include_ukraine: bool = True,
     include_idrc: bool = True,
     use_2022_ukraine: bool | None = None,
+    currency: str = "EUR",
 ) -> pd.DataFrame:
     """"""
 
-    oda = get_total_oda_and_gni(years=years)
+    oda = get_total_oda_and_gni(years=years, currency=currency)
 
     if not include_idrc:
         refugees = (

@@ -2,7 +2,7 @@ import json
 
 import pandas as pd
 from bblocks import add_short_names_column, convert_id
-from pydeflate import deflate, set_pydeflate_path
+from pydeflate import set_pydeflate_path
 
 from stories.config import Paths
 from stories.eu27_targets.growth import (
@@ -17,6 +17,7 @@ from stories.eu27_targets.oda import (
     add_target_column,
     get_total_oda_data,
 )
+from stories.eu27_targets.tools import to_constant
 
 MAX_DATA_YEAR: int = 2023
 set_pydeflate_path(Paths.raw_data)
@@ -48,7 +49,7 @@ def get_gni_projections(
         deflators, left_on="donor_code", right_on="dac_code", how="right"
     )
 
-    gni_projection["gni"] = gni_projection["value"].astype(float) * gni_projection[
+    gni_projection["gni"] = gni_projection["value"].astype(float) / gni_projection[
         "gni"
     ].astype(float)
 
@@ -146,11 +147,13 @@ def individual_spending(
     include_idrc: bool = True,
     include_ukraine: bool = True,
     use_2022_ukraine: bool = None,
+    currency: str = "EUR",
 ) -> pd.DataFrame:
     years = list(range(start_year, MAX_DATA_YEAR + 1))
     # Get spending data
     oda_df = get_total_oda_data(
         years=years,
+        currency=currency,
         include_idrc=include_idrc,
         include_ukraine=include_ukraine,
         use_2022_ukraine=use_2022_ukraine,
@@ -160,56 +163,6 @@ def individual_spending(
     oda_df = calculate_oda_gni_ratio(oda_df)
 
     return oda_df
-
-
-def to_constant(df: pd.DataFrame, base_year: int = 2025) -> pd.DataFrame:
-    if base_year > 2023:
-        deflators = get_constant_deflators(base=base_year).assign(
-            year=lambda d: d.year.dt.year
-        )
-        deflate_year = 2023
-    else:
-        deflate_year = base_year
-
-    df = deflate(
-        df=df,
-        base_year=deflate_year,
-        deflator_source="oecd_dac",
-        deflator_method="dac_deflator",
-        exchange_source="oecd_dac",
-        source_currency="EUI",
-        target_currency="EUI",
-        id_column="donor_code",
-        id_type="DAC",
-        date_column="year",
-        source_column="total_oda_official_definition",
-        target_column="total_oda_official_definition",
-    )
-    df = deflate(
-        df=df,
-        base_year=deflate_year,
-        deflator_source="oecd_dac",
-        deflator_method="dac_deflator",
-        exchange_source="oecd_dac",
-        source_currency="EUI",
-        target_currency="EUI",
-        id_column="donor_code",
-        id_type="DAC",
-        date_column="year",
-        source_column="gni",
-        target_column="gni",
-    )
-
-    if base_year > 2023:
-        df = df.merge(
-            deflators, left_on=["year", "donor_code"], right_on=["year", "dac_code"]
-        ).assign(
-            total_oda_official_definition=lambda d: d.total_oda_official_definition
-            / d.value,
-            gni=lambda d: d.gni / d.value,
-        )
-
-    return df.assign(prices="constant", base_year=base_year)
 
 
 def spending_versions(
@@ -315,6 +268,9 @@ def target_versions(
 
 
 def eu_spending_projections(
+    start_year: int = 2014,
+    end_year: int = 2030,
+    base_year: int = 2025,
     include_historical: bool = True,
     exclude_ukraine: bool = False,
     exclude_idrc: bool = False,
@@ -325,8 +281,8 @@ def eu_spending_projections(
     suffix += "_excl_idrc" if exclude_idrc else ""
 
     targets = individual_gni_targets(
-        start_year=2018,
-        target_year=2030,
+        start_year=start_year,
+        target_year=end_year,
         projections_end_year=2034,
         use_2022_ukraine=True,
         include_idrc=not exclude_idrc,
@@ -335,11 +291,11 @@ def eu_spending_projections(
 
     if include_historical:
         historical_constant = individual_spending(
-            start_year=2018,
+            start_year=start_year,
             include_idrc=not exclude_idrc,
             include_ukraine=not exclude_ukraine,
             use_2022_ukraine=None if exclude_ukraine else True,
-        ).pipe(to_constant, base_year=2025)
+        ).pipe(to_constant, base_year=base_year)
 
     else:
         historical_constant = pd.DataFrame()
@@ -348,9 +304,9 @@ def eu_spending_projections(
     constant_projections = get_gni_projections(
         last_year=2034,
         prices="constant",
-        base_year=2025,
+        base_year=base_year,
         rolling_window=3,
-    ).assign(prices="constant", base_year=2025)
+    ).assign(prices="constant", base_year=base_year)
 
     constant_spending = pd.concat(
         [historical_constant, constant_projections], ignore_index=True
@@ -596,6 +552,9 @@ def scenarios_eu_totals() -> None:
         df=additional_spending_yearly, id_column="donor_code", id_type="DACCode"
     ).drop(columns=["donor_code"])
 
+    additional_spending_yearly["additional_oda"] = additional_spending_yearly[
+        "additional_oda"
+    ].clip(0)
     additional_spending_yearly.to_csv(
         Paths.eu_project_data / "additional_spending_yearly.csv", index=False
     )

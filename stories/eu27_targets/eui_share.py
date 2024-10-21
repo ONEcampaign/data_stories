@@ -5,29 +5,30 @@ from pydeflate import set_pydeflate_path, deflate
 
 from stories import config
 from stories.eu27_targets.common import EU27, EU28
+from stories.eu27_targets.tools import to_constant
 
 CURRENCY = "USD"
 
 set_data_path(config.Paths.raw_data)
 set_pydeflate_path(config.Paths.raw_data)
 
-
-def to_constant_eur(data: pd.DataFrame, year: int, column: str) -> pd.DataFrame:
-    return deflate(
-        df=data,
-        base_year=year,
-        source_currency="USA" if CURRENCY == "USD" else "EUI",
-        target_currency="EUI",
-        date_column="year",
-        deflator_source="oecd_dac",
-        deflator_method="dac_deflator",
-        exchange_source="oecd_dac",
-        exchange_method="implied",
-        source_column=column,
-        target_column=column,
-        id_column="donor_code",
-        id_type="DAC",
-    )
+#
+# def to_constant_eur(data: pd.DataFrame, year: int, column: str) -> pd.DataFrame:
+#     return deflate(
+#         df=data,
+#         base_year=year,
+#         source_currency="USA" if CURRENCY == "USD" else "EUI",
+#         target_currency="EUI",
+#         date_column="year",
+#         deflator_source="oecd_dac",
+#         deflator_method="dac_deflator",
+#         exchange_source="oecd_dac",
+#         exchange_method="implied",
+#         source_column=column,
+#         target_column=column,
+#         id_column="donor_code",
+#         id_type="DAC",
+#     )
 
 
 def get_total_oda(
@@ -91,10 +92,10 @@ def total_eux(x: list = EU27, start_year: int = 2022) -> pd.DataFrame:
 def eui_period_share(period: str = "previous") -> float:
 
     if period == "previous":
-        years = range(2014, 2020)
+        years = range(2014, 2021)
         donors = EU28
     else:
-        years = range(2020, 2023)
+        years = range(2021, 2023)
         donors = EU27
 
     spending = total_eux(donors, start_year=min(years)).loc[
@@ -116,29 +117,35 @@ def eui_period_share(period: str = "previous") -> float:
 
 
 def eu_own_resources_constant_eur() -> pd.DataFrame:
-    spending_eui = (
-        get_total_oda(start_year=2014, end_year=2022)
-        .loc[lambda d: d.donor_code.isin([20918, 918])]
-        .pipe(to_constant_eur, 2022, "total_oda_official_definition")
+    spending_eui = get_total_oda(start_year=2014, end_year=2023).loc[
+        lambda d: d.donor_code.isin([20918, 918])
+    ]
+
+    spending_eui = to_constant(df=spending_eui, base_year=2025, source_currency="USD")
+
+    contributions_to_eui = download_eu_x_eui(EU27, start_year=2014).rename(
+        columns={"value": "value_eu"}
     )
 
-    contributions_to_eui = download_eu_x_eui(EU27, start_year=2014).pipe(
-        to_constant_eur, 2022, "value"
+    contributions_to_eui = to_constant(
+        df=contributions_to_eui,
+        base_year=2025,
+        source_currency="USD",
+        source_column="value_eu",
+        target_column="value_eu",
     )
 
     contributions_to_eui = (
-        contributions_to_eui.groupby("year")["value"].sum().reset_index()
+        contributions_to_eui.groupby("year")["value_eu"].sum().reset_index()
     )
 
     data = pd.merge(spending_eui, contributions_to_eui, on="year", how="left")
 
-    data["own_resources"] = data["total_oda_official_definition"] - data["value"]
+    data["own_resources"] = data["total_oda_official_definition"] - data["value_eu"]
 
     data["own_resources_share"] = (
         100 * data["own_resources"] / data["total_oda_official_definition"]
     )
-
-    print(data.query("year.between(2020,2023)").own_resources.mean())
 
     return data
 
@@ -158,3 +165,4 @@ if __name__ == "__main__":
     # total_eu = total_eux(start_year=2022)
 
     own = eu_own_resources_constant_eur()
+    p, c = eui_mff_shares()

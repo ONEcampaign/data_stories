@@ -20,6 +20,7 @@ def add_dac_codes(data: pd.DataFrame) -> pd.DataFrame:
         "ISO3",
         "DACCode",
         not_found=pd.NA,
+        additional_mapping={"EUI": 918},
     ).astype("Int32")
     return data
 
@@ -48,14 +49,33 @@ def calculate_deflator(data: pd.DataFrame) -> pd.DataFrame:
 
 def get_constant_deflators(base: int = 2022):
 
-    weo = WorldEconomicOutlook()
+    weo = WorldEconomicOutlook(year=2024, release=1)
 
-    weo.load_data("NGDP_D")
+    weo.load_data(["NGDP_D", "NGDPD"])
+
+    df = weo.get_data("NGDPD")
+    eu = weo.get_data()
+
+    eu = eu.pivot(
+        index=["iso_code", "year"], columns="indicator", values="value"
+    ).reset_index()
+
+    eu["NGDPD_C"] = eu["NGDPD"] / (eu["NGDP_D"] / 100)
+
+    eu = (
+        eu.groupby(["year"], dropna=False, observed=True)[["NGDPD", "NGDPD_C"]]
+        .sum()
+        .reset_index()
+        .assign(iso_code="EUI", indicator="NGDP_D")
+        .assign(value=lambda d: 100 * d.NGDPD / d.NGDPD_C)
+        .filter(["iso_code", "year", "indicator", "value"])
+    )
+
+    df = pd.concat([df, eu], ignore_index=True)
 
     df = (
-        weo.get_data()
-        .pipe(add_dac_codes)
-        .pipe(filter_eu27)
+        df.pipe(add_dac_codes)
+        .loc[lambda d: d.dac_code.isin(eu27 + [918])]
         .pipe(rebase_value, year=base)
     )
 
@@ -64,7 +84,7 @@ def get_constant_deflators(base: int = 2022):
 
 def get_current_deflators(base: int = 2023):
 
-    weo = WorldEconomicOutlook()
+    weo = WorldEconomicOutlook(year=2020, version=1)
 
     weo.load_data("NGDP")
 
