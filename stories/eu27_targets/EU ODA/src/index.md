@@ -144,13 +144,13 @@ To arrive at a number for the EU Institutions, we look at the historical breakdo
 For the period 2014-2020, we look at Total EU ODA as EU28 ODA + EU Institutions ODA (imputable and non-imputable). For the period 2021-2022 (the latest year with complete data), we look at Total EU ODA as EU27 ODA + EU Institutions ODA (imputable and non-imputable).
 
 In 2025 prices, between 2014 and 2020:
-- EU Member States spent €790 billion
-- The EU Institutions spent €195.6 billion
-  - *Of which*, €175 billion was imputable to EU Member States and €20.6 billion was non-imputable
+- EU Member States spent €805 billion
+- The EU Institutions spent €195.7 billion
+  - *Of which*, €178.8 billion was imputable to EU Member States and €16.9. billion was non-imputable
 
-That means that the EU Institutions provided provided 22.1% of the total ODA spent by EU Member States (e.g. the imputable portion of EU Institutions ODA). This imputable portion represented 89.4% of the total ODA provided by the EU Institutions.
+That means that the EU Institutions provided provided 22.2% of the total ODA spent by EU Member States (e.g. the imputable portion of EU Institutions ODA). This imputable portion represented 91.3% of the total ODA provided by the EU Institutions.
 
-Putting it all together, based on our estimate of required EU Member States spending (i.e €984 billion for 2028-2034), if the historical shares outlined above remained constant, the EU Institutions would need to spend **€239.5 billion** over that period (€214.2 billion of which would be imputable to EU Member States and €25.3 billion would be non-imputable).
+Putting it all together, based on our estimate of required EU Member States spending (i.e €984 billion for 2028-2034), if the historical shares outlined above remained constant, the EU Institutions would need to spend **€239.2 billion** over that period (€218.5 billion of which would be imputable to EU Member States and €20.7 billion would be non-imputable).
 
 
 ---
