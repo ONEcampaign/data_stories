@@ -1,5 +1,3 @@
-import json
-
 import pandas as pd
 from bblocks import add_short_names_column, convert_id
 from pydeflate import set_pydeflate_path
@@ -8,7 +6,6 @@ from stories.config import Paths
 from stories.eu27_targets.growth import (
     get_current_deflators,
     extend_deflators_to_year,
-    get_constant_deflators,
     get_gdp_growth_factor,
 )
 from stories.eu27_targets.oda import (
@@ -516,18 +513,6 @@ def scenarios_eu_totals() -> None:
 
     full = eu_spending_projections(include_historical=True).assign(indicator="full")
 
-    # no_idrc = eu_spending_projections(
-    #     include_historical=True, exclude_idrc=True
-    # ).assign(indicator="no_idrc")
-    #
-    # no_ukr = eu_spending_projections(
-    #     include_historical=True, exclude_ukraine=True
-    # ).assign(indicator="no_ukr")
-    #
-    # no_ukr_no_idrc = eu_spending_projections(
-    #     include_historical=True, exclude_ukraine=True, exclude_idrc=True
-    # ).assign(indicator="no_ukr_no_idrc")
-
     full_data = pd.concat(
         [
             full,
@@ -574,58 +559,6 @@ def scenarios_eu_totals() -> None:
         Paths.eu_project_data / "additional_spending_yearly.csv", index=False
     )
 
-    # full_current = calculate_spending_period(full, "full_latest", start=2023, end=2023)
-    # no_idrc_current = calculate_spending_period(
-    #     no_idrc, "no_idrc_latest", start=2023, end=2023
-    # )
-    # no_ukr_current = calculate_spending_period(
-    #     no_ukr, "no_ukr_latest", start=2023, end=2023
-    # )
-    # no_ukr_no_idrc_current = calculate_spending_period(
-    #     no_ukr_no_idrc, "no_ukr_no_idrc_latest", start=2023, end=2023
-    # )
-
-    # full_total = calculate_spending_period(full, "full")
-    # full_share = calculate_eu_spending_period(full, "full")
-
-    # no_idrc_total = calculate_spending_period(no_idrc, "no_idrc")
-    # no_idrc_share = calculate_eu_spending_period(no_idrc, "no_idrc")
-    #
-    # no_ukr_total = calculate_spending_period(no_ukr, "no_ukr")
-    # no_ukr_share = calculate_eu_spending_period(no_ukr, "no_ukr")
-    #
-    # no_ukr_no_idrc_total = calculate_spending_period(no_ukr_no_idrc, "no_ukr_no_idrc")
-    # no_ukr_no_idrc_share = calculate_eu_spending_period(
-    #     no_ukr_no_idrc, "no_ukr_no_idrc"
-    # )
-
-    # eu_shares = {
-    #     "eui_share": full_share | no_idrc_share | no_ukr_share | no_ukr_no_idrc_share
-    # }
-    #
-    # key_numbers |= {
-    #     "totals": (
-    #         full_total
-    #         | no_idrc_total
-    #         | no_ukr_total
-    #         | no_ukr_no_idrc_total
-    #         | full_current
-    #         | no_idrc_current
-    #         | no_ukr_current
-    #         | no_ukr_no_idrc_current
-    #     )
-    # }
-    #
-    # key_numbers |= eu_shares
-
-    # # Save as json
-    # with open(Paths.eu_project_data / "scenario_totals.json", "w") as f:
-    #     json.dump(key_numbers, f)
-
 
 if __name__ == "__main__":
     scenarios_eu_totals()
-    # spending = spending_targets_by_country()
-    # spending_projections = projected_gni_to_spending(gni_projections)
-    # #
-    # data = spending_targets_by_country()

@@ -49,7 +49,7 @@ def calculate_deflator(data: pd.DataFrame) -> pd.DataFrame:
 
 def get_constant_deflators(base: int = 2022):
 
-    weo = WorldEconomicOutlook(year=2024, release=1)
+    weo = WorldEconomicOutlook(year=2024, release=2)
 
     weo.load_data(["NGDP_D", "NGDPD"])
 
@@ -84,7 +84,7 @@ def get_constant_deflators(base: int = 2022):
 
 def get_gdp_growth_factor(from_year: int):
 
-    weo = WorldEconomicOutlook(year=2024, release=1)
+    weo = WorldEconomicOutlook(year=2024, release=2)
 
     weo.load_data(["NGDP_R"])
 
@@ -110,7 +110,7 @@ def get_gdp_growth_factor(from_year: int):
 
 def get_current_deflators(base: int = 2023):
 
-    weo = WorldEconomicOutlook(year=2020, release=1)
+    weo = WorldEconomicOutlook(year=2020, release=2)
 
     weo.load_data("NGDP")
 

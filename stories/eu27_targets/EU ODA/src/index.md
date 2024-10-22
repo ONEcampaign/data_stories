@@ -59,7 +59,7 @@ In order to estimate how much countries will need to spend by 2030 in order to m
 For the first, we use the latest available data, for 2023, as reported to the OECD DAC. This data measures Official Development Assistance (in grant equivalent terms) as a share of Gross National Income (GNI) for each EU country.
 
 #### GNI growth projections
-For the second, we use the IMF World Economic Outlook (WEO) projections for GDP growth. We use these projections as a proxy for GNI growth. We apply these projections to the latest GNI numbers to estimate how much countries will need to spend in the future to meet their targets.
+For the second, we use the October 2024 IMF World Economic Outlook (WEO) projections for GDP growth. We use these projections as a proxy for GNI growth. We apply these projections to the latest GNI numbers to estimate how much countries will need to spend in the future to meet their targets.
 
 The WEO projections are available up to 2028. For years beyond 2028, we use the average growth rate for 2026-28, and assume it will hold constant until 2034.
 
@@ -108,7 +108,7 @@ const additionalSpendingTable = view(Inputs.table(additionalSpendingData.filter(
 
 </div>
 
-Putting it all together, for the 2028 to 2034 period, EU countries would need to spend **€916 billion** euros to meet their ODA targets (in 2025 constant prices).
+Putting it all together, for the 2028 to 2034 period, EU countries would need to spend **€984 billion** euros to meet their ODA targets (in 2025 constant prices).
 
 The following chart shows actual and required ODA spending for EU Member States, from 2018 to 2034.
 
@@ -119,19 +119,41 @@ The following chart shows actual and required ODA spending for EU Member States,
 
 ---
 
-## The role of the EU Institutions?
+## The role of the EU Institutions
 
+For this analysis we distinguish two key components of the ODA provided by the EU institutions: ODA imputable to EU member states, and ODA which is not imputable to EU member states.
 
+The imputable portion refers to ODA that is counted towards the ODA targets of EU member states. These amounts are reported by member states to the OECD DAC, as part of the *Members use of the Multilateral System* dataset. The non-imputable portion refers to the difference between what the EU Institutions spend in a given year, and the amount that is imputable to EU member states.
 
-EU Member states provide core funding to the EU Institutions through a number of instruments. The EU Institutions also have their own resources, which they can use to provide ODA.
+The following chart shows the breakdown of EU spending from 2014 to 2022, as percentages of *Total EU ODA*.
 
-The share of EU ODA provided by the EU Institutions has been **23.1% on average** over the current MFF period (2020 - 2022). Over the previous MFF period (2014-2020), it was 24.6%.
+Headline ODA (e.g what counts against the 0.7 target) is the sum what what this chart shows as "Member States" and "Imputable EU Institutions ODA".
 
-The EU Institutions spend an average of **€3.9 billion** per year (2020-2022), out of their own resources. This is **20.6%** of their total yearly spending (during the current MFF).
+*Total EU ODA* provided by the EU Member States and the EU Institutions, additionally includes the non-imputable portion.
 
-<div class="card" style="max-width: 640px;">
-
-## EU Institutions ODA spending
-
-<iframe src='https://flo.uri.sh/visualisation/19459650/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:550px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
+<div class="card" style="max-width: 720px; padding: 0;">
+<iframe src='https://flo.uri.sh/visualisation/19902177/embed' title='Interactive or visual content' class='flourish-embed-iframe' frameborder='0' scrolling='no' style='width:100%;height:600px;' sandbox='allow-same-origin allow-forms allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation'></iframe>
 </div>
+
+#### Projecting the required spending
+
+As noted above, for the 2028 to 2034 period, EU countries would need to spend **€984 billion** euros to meet their ODA targets (in 2025 constant prices).
+
+To arrive at a number for the EU Institutions, we look at the historical breakdown of EU ODA in order to determine how much of EU Member states' ODA has been provided by the EU Institutions, both as imputable and non-imputable ODA.
+
+For the period 2014-2020, we look at Total EU ODA as EU28 ODA + EU Institutions ODA (imputable and non-imputable). For the period 2021-2022 (the latest year with complete data), we look at Total EU ODA as EU27 ODA + EU Institutions ODA (imputable and non-imputable).
+
+In 2025 prices, between 2014 and 2020:
+- EU Member States spent €790 billion
+- The EU Institutions spent €195.6 billion
+  - *Of which*, €175 billion was imputable to EU Member States and €20.6 billion was non-imputable
+
+That means that the EU Institutions provided provided 22.1% of the total ODA spent by EU Member States (e.g. the imputable portion of EU Institutions ODA). This imputable portion represented 89.4% of the total ODA provided by the EU Institutions.
+
+Putting it all together, based on our estimate of required EU Member States spending (i.e €984 billion for 2028-2034), if the historical shares outlined above remained constant, the EU Institutions would need to spend **€239.5 billion** over that period (€214.2 billion of which would be imputable to EU Member States and €25.3 billion would be non-imputable).
+
+
+---
+
+## Data and replication code
+All data and code used in this analysis is available through this [GitHub repository](https://github.com/ONEcampaign/eu_mff).
