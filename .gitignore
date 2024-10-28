@@ -138,3 +138,4 @@ raw_data/fullCRS.parquet
 raw_data/crs_codes.json
 raw_data/income_levels.csv
 raw_data/multisystem_raw.feather
+/raw_data
